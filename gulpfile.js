@@ -11,13 +11,13 @@ let del = require('del');
 let $ = require('gulp-load-plugins')();
 let log = require('fancy-log');
 let colors = require('ansi-colors');
-let webpack = require('webpack');
-let webpackStream = require('webpack-stream');
-let webpackConfig = require('./webpack.config.js');
+// let webpack = require('webpack');
+// let webpackStream = require('webpack-stream');
+// let svelteConfig = require('./webpack.config.js');
 let postfix = (new Date()).getTime().toString();
 
 let ENVIRONMENT = 'development';
-let WEBPACK_NEED_WATCH = false;
+let SVELTE_NEED_WATCH = false;
 
 /**
  * Compile Style & Script
@@ -27,7 +27,7 @@ function handleCompileError(event) {
 }
 
 function compileSass() {
-    return gulp.src('src/styles/main.{sass,scss}')
+    return gulp.src('src/styles/editor.{sass,scss}')
         .pipe($.sass({
             outputStyle: ('production' === ENVIRONMENT) ? 'compressed' : 'expanded'
         }).on('error', handleCompileError))
@@ -36,33 +36,33 @@ function compileSass() {
             path.basename = path.basename.split('.')[0];
             path.extname = '.min.css';
         }))
-        .pipe(gulp.dest('temp/styles'));
+        .pipe(gulp.dest('temp/assets/styles'));
 }
 
-function compileWebpack(callback) {
+function compileSvelte(callback) {
     if ('production' === ENVIRONMENT) {
-        let definePlugin = new webpack.DefinePlugin({
-            'process.env': {
-                'ENV': "'production'",
-                'BUILD_TIME': postfix,
-                'NODE_ENV': JSON.stringify('production')
-            }
-        });
+        // let definePlugin = new webpack.DefinePlugin({
+        //     'process.env': {
+        //         'ENV': "'production'",
+        //         'BUILD_TIME': postfix,
+        //         'NODE_ENV': JSON.stringify('production')
+        //     }
+        // });
 
-        webpackConfig.mode = ENVIRONMENT;
-        webpackConfig.plugins = webpackConfig.plugins || [];
-        webpackConfig.plugins.push(definePlugin);
+        // svelteConfig.mode = ENVIRONMENT;
+        // svelteConfig.plugins = svelteConfig.plugins || [];
+        // svelteConfig.plugins.push(definePlugin);
     }
 
-    if (WEBPACK_NEED_WATCH) {
-        webpackConfig.watch = true;
+    if (SVELTE_NEED_WATCH) {
+        // svelteConfig.watch = true;
     }
 
-    let result = gulp.src('src/scripts/main.js')
-        .pipe(webpackStream(webpackConfig, webpack).on('error', handleCompileError))
+    let result = gulp.src('src/scripts/editor.js')
+        .pipe(webpackStream(svelteConfig, webpack).on('error', handleCompileError))
         .pipe(gulp.dest('temp/scripts'));
 
-    if (WEBPACK_NEED_WATCH) {
+    if (SVELTE_NEED_WATCH) {
         callback();
     } else {
         return result;
@@ -114,17 +114,13 @@ function releaseCopyAll() {
  * Set Variables
  */
 function setEnv(callback) {
-
-    // Warrning: Change ENVIRONMENT to Prodctuion
     ENVIRONMENT = 'production';
 
     callback();
 }
 
 function setWatch(callback) {
-
-    // Webpack need watch
-    WEBPACK_NEED_WATCH = true;
+    SVELTE_NEED_WATCH = true;
 
     callback();
 }
@@ -146,7 +142,7 @@ function cleanDist() {
 gulp.task('prepare', gulp.series(
     cleanTemp,
     gulp.parallel(copyFrontendFonts, copyFrontendImages, copyFrontendVendorFonts),
-    gulp.parallel(compileSass, compileWebpack)
+    gulp.parallel(compileSass, compileSvelte)
 ));
 
 gulp.task('release', gulp.series(
