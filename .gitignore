@@ -2,5 +2,4 @@
 .sass-cache
 temp
 node_modules
-src/backend/vendor
-src/frontend/fonts/vendor
+src/fonts/vendor

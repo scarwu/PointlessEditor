@@ -27,7 +27,7 @@ function handleCompileError(event) {
 }
 
 function compileSass() {
-    return gulp.src('src/frontend/styles/main.{sass,scss}')
+    return gulp.src('src/styles/main.{sass,scss}')
         .pipe($.sass({
             outputStyle: ('production' === ENVIRONMENT) ? 'compressed' : 'expanded'
         }).on('error', handleCompileError))
@@ -36,7 +36,7 @@ function compileSass() {
             path.basename = path.basename.split('.')[0];
             path.extname = '.min.css';
         }))
-        .pipe(gulp.dest('temp/frontend/styles'));
+        .pipe(gulp.dest('temp/styles'));
 }
 
 function compileWebpack(callback) {
@@ -58,9 +58,9 @@ function compileWebpack(callback) {
         webpackConfig.watch = true;
     }
 
-    let result = gulp.src('src/frontend/scripts/main.js')
+    let result = gulp.src('src/scripts/main.js')
         .pipe(webpackStream(webpackConfig, webpack).on('error', handleCompileError))
-        .pipe(gulp.dest('temp/frontend/scripts'));
+        .pipe(gulp.dest('temp/scripts'));
 
     if (WEBPACK_NEED_WATCH) {
         callback();
@@ -72,24 +72,19 @@ function compileWebpack(callback) {
 /**
  * Copy Files & Folders
  */
-function copyBackend() {
-    return gulp.src('src/backend/**/*')
-        .pipe(gulp.dest('temp/backend'));
-}
-
 function copyFrontendFonts() {
-    return gulp.src('src/frontend/fonts/*')
-        .pipe(gulp.dest('temp/frontend/fonts'));
+    return gulp.src('src/fonts/*')
+        .pipe(gulp.dest('temp/fonts'));
 }
 
 function copyFrontendImages() {
-    return gulp.src('src/frontend/images/**/*')
-        .pipe(gulp.dest('temp/frontend/images'));
+    return gulp.src('src/images/**/*')
+        .pipe(gulp.dest('temp/images'));
 }
 
 function copyFrontendVendorFonts() {
     return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}')
-        .pipe(gulp.dest('temp/frontend/fonts/vendor'));
+        .pipe(gulp.dest('temp/fonts/vendor'));
 }
 
 /**
@@ -99,10 +94,9 @@ function watch() {
 
     // Watch Files
     gulp.watch('temp/**/*').on('change', $.livereload.changed);
-    gulp.watch('src/backend/**/*', copyBackend);
-    gulp.watch('src/frontend/fonts/*', copyFrontendFonts);
-    gulp.watch('src/frontend/images/**/*', copyFrontendImages);
-    gulp.watch('src/frontend/styles/**/*.{sass,scss}', compileSass);
+    gulp.watch('src/fonts/*', copyFrontendFonts);
+    gulp.watch('src/images/**/*', copyFrontendImages);
+    gulp.watch('src/styles/**/*.{sass,scss}', compileSass);
 
     // Start LiveReload
     $.livereload.listen();
@@ -114,12 +108,6 @@ function watch() {
 function releaseCopyAll() {
     return gulp.src('temp/**/*')
         .pipe(gulp.dest('dist'));
-}
-
-function releaseReplaceIndex() {
-    return gulp.src('dist/backend/index.php')
-        .pipe($.replace('$postfix = time()', '$postfix = ' + postfix))
-        .pipe(gulp.dest('dist/backend'));
 }
 
 /**
@@ -157,14 +145,14 @@ function cleanDist() {
  */
 gulp.task('prepare', gulp.series(
     cleanTemp,
-    gulp.parallel(copyBackend, copyFrontendFonts, copyFrontendImages, copyFrontendVendorFonts),
+    gulp.parallel(copyFrontendFonts, copyFrontendImages, copyFrontendVendorFonts),
     gulp.parallel(compileSass, compileWebpack)
 ));
 
 gulp.task('release', gulp.series(
     setEnv, cleanDist,
     'prepare',
-    releaseCopyAll, releaseReplaceIndex
+    releaseCopyAll
 ));
 
 gulp.task('default', gulp.series(

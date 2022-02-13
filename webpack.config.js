@@ -11,14 +11,14 @@ var path = require('path');
 module.exports = {
     mode: 'development',
     entry: {
-        main: './src/frontend/scripts/main.js'
+        main: './src/scripts/main.js'
     },
     output: {
         filename: '[name].min.js'
     },
     resolve: {
         modules: [
-            path.resolve('./src/frontend/scripts'),
+            path.resolve('./src/scripts'),
             'node_modules'
         ],
         extensions: [
