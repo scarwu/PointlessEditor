@@ -1,52 +1,87 @@
-import preprocess from 'svelte-preprocess'
-import svelte from 'rollup-plugin-svelte'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import json from "@rollup/plugin-json"
 import livereload from 'rollup-plugin-livereload'
 import { terser } from 'rollup-plugin-terser'
+import copy from 'rollup-plugin-copy'
+import shell from 'rollup-plugin-shell'
+import svelte from 'rollup-plugin-svelte'
+import { sass } from 'svelte-preprocess-sass'
+import css from 'rollup-plugin-css-porter'
 
-const production = !process.env.ROLLUP_WATCH
+const mode = process.env.MODE || 'development'
 
 export default {
     input: 'src/editor.js',
     output: {
-        sourcemap: true,
+        sourcemap: 'development' === mode,
         format: 'iife',
         name: 'app',
-        file: 'temp/editor.min.js'
+        file: 'development' === mode
+            ? 'temp/scripts/editor.min.js'
+            : 'dist/scripts/editor.min.js'
     },
     plugins: [
         svelte({
-            // enable run-time checks when not in production
-            dev: !production,
-            preprocess: preprocess(),
-            // we'll extract any component CSS out into
-            // a separate file - better for performance
-            css: css => {
-                css.write('editor.min.css')
+            preprocess: {
+                style: sass({
+                    sourceMap: 'development' === mode
+                })
             }
         }),
-
-        // If you have external dependencies installed from
-        // npm, you'll most likely need these plugins. In
-        // some cases you'll need additional configuration -
-        // consult the documentation for details:
-        // https://github.com/rollup/plugins/tree/master/packages/commonjs
         resolve({
-            browser: true,
-            dedupe: ['svelte']
+            browser: true
         }),
         commonjs(),
         json(),
 
-        // Watch the `public` directory and refresh the
-        // browser on changes when not in production
-        !production && livereload('temp'),
+        ...('development' === mode ? [
+            shell({
+                commands: [
+                    'rm -rf temp'
+                ],
+                hook: 'buildStart'
+            }),
+            copy({
+                targets: [
+                    {
+                        src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
+                        dest: 'temp/fonts/vendor'
+                    }
+                ],
+                hook: 'buildStart'
+            }),
+            css({
+                raw: 'temp/styles/editor.min.css',
+                minified: false
+            }),
 
-        // If we're building for production (npm run build
-        // instead of npm run dev), minify
-        production && terser()
+            // Livereload
+            process.env.ROLLUP_WATCH && livereload('temp')
+        ] : [
+            shell({
+                commands: [
+                    'rm -rf dist'
+                ],
+                hook: 'buildStart'
+            }),
+            copy({
+                targets: [
+                    {
+                        src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
+                        dest: 'dist/fonts/vendor'
+                    }
+                ],
+                hook: 'buildStart'
+            }),
+            css({
+                raw: false,
+                minified:'dist/styles/editor.min.css'
+            }),
+
+            // Minify JS
+            terser()
+        ])
     ],
     watch: {
         clearScreen: false
