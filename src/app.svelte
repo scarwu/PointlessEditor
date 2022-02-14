@@ -1,75 +1,123 @@
 <script>
-    import ApiClient from './api'
+import ApiClient from './api'
 
-    let isShowModel = false
+$: isShowModel = false
+$: targetMenu = ''
+$: postList = []
+
+function toggleModel () {
+    isShowModel = !isShowModel
+}
+
+function selectMenu (target) {
+    targetMenu = target
+
+    switch (target) {
+    case 'article':
+    case 'describe':
+        postList = []
+
+        ApiClient.getPostList({
+            type: target
+        }).then((payload) => {
+            postList = payload[target]
+        })
+
+        break;
+    }
+}
+
 </script>
 
 <style lang="sass">
-    // Reset Bootstrap
-    $grid-gutter-width: 0
-    $fa-font-path: "../../fonts/vendor"
+// Reset Bootstrap
+$grid-gutter-width: 0
+$fa-font-path: "../../fonts/vendor"
 
-    // Import 3rd-Party Libraries
-    @import "../node_modules/bootstrap/scss/bootstrap"
-    @import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome"
-    @import "../node_modules/@fortawesome/fontawesome-free/scss/solid"
-    @import "../node_modules/@fortawesome/fontawesome-free/scss/regular"
-    @import "../node_modules/@fortawesome/fontawesome-free/scss/brands"
+// Import 3rd-Party Libraries
+@import "../node_modules/bootstrap/scss/bootstrap"
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome"
+@import "../node_modules/@fortawesome/fontawesome-free/scss/solid"
+@import "../node_modules/@fortawesome/fontawesome-free/scss/regular"
+@import "../node_modules/@fortawesome/fontawesome-free/scss/brands"
 
-    #pe-editor
-        .pe-label
-            position: fixed
-            top: 0
-            left: 0
-            display: block
-            width: 50px
-            height: 50px
-            text-align: center
-            line-height: 50px
-            cursor: pointer
+#pe-editor
+    .pe-label
+        position: fixed
+        top: 0
+        left: 0
+        display: block
+        width: 50px
+        height: 50px
+        text-align: center
+        line-height: 50px
+        cursor: pointer
 
-        .pe-model
-            position: fixed
-            top: 10%
-            left: 10%
-            right: 10%
-            bottom: 10%
-            display: none
-            border: 1px solid #333
-            border-radius: 5px
-            background-color: #fff
+    .pe-model
+        position: fixed
+        top: 10%
+        left: 10%
+        right: 10%
+        bottom: 10%
+        border: 1px solid #333
+        border-radius: 5px
+        background-color: #fff
 
-            &.isShow
-                display: block
+        .pe-header
 
-            .bh-header
+        .pe-body
+            .pe-menu
+                background-color: #ddd
 
-            .bh-body
-                .bh-menu
-                    // pass
-                .bh-content
-                    // pass
+                .pe-option
+                    padding: 0 10px
+                    height: 40px
+                    line-height: 40px
+                    cursor: pointer
+
+            .pe-content
+                background-color: #eee
 </style>
 
 <div id="pe-editor">
-    <div class="pe-label" on:click={()=> isShowModel = !isShowModel}>
+    <div class="pe-label" on:click={() => toggleModel()}>
         <i class="fas fa-user-cog"></i>
     </div>
-    <div class="pe-model" class:isShow={isShowModel}>
+
+    {#if isShowModel}
+    <div class="pe-model">
         <div class="row">
             <div class="pe-header col-12">
 
             </div>
-            <div class="pe-body col-12">
+            <div class="pe-body col-12 row">
                 <div class="pe-menu col-3">
-                    <div>Post</div>
-                    <div>Theme</div>
-                    <div>Config</div>
+                    <div class="pe-option" on:click={() => selectMenu('article')}>Article</div>
+                    <div class="pe-option" on:click={() => selectMenu('describe')}>Describe</div>
+                    <div class="pe-option" on:click={() => selectMenu('theme')}>Theme</div>
+                    <div class="pe-option" on:click={() => selectMenu('config')}>Config</div>
                 </div>
                 <div class="pe-content col-9">
-
+                    {#if 'article' === targetMenu}
+                        {#each postList as postItem}
+                        <div>{postItem.title}</div>
+                        {/each}
+                    {/if}
+                    {#if 'describe' === targetMenu}
+                        {#each postList as postItem}
+                        <div>{postItem.title}</div>
+                        {/each}
+                    <div>Theme</div>
+                    {/if}
+                    {#if 'theme' === targetMenu}
+                    <div>Theme</div>
+                    {/if}
+                    {#if 'config' === targetMenu}
+                    <div>Config</div>
+                    {/if}
                 </div>
             </div>
         </div>
     </div>
+    {/if}
 </div>

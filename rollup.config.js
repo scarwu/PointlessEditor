@@ -18,8 +18,8 @@ export default {
         format: 'iife',
         name: 'app',
         file: 'development' === mode
-            ? 'temp/scripts/editor.min.js'
-            : 'dist/scripts/editor.min.js'
+            ? 'temp/assets/scripts/editor.min.js'
+            : 'dist/assets/scripts/editor.min.js'
     },
     plugins: [
         svelte({
@@ -46,13 +46,13 @@ export default {
                 targets: [
                     {
                         src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
-                        dest: 'temp/fonts/vendor'
+                        dest: 'temp/assets/fonts/vendor'
                     }
                 ],
                 hook: 'buildStart'
             }),
             css({
-                raw: 'temp/styles/editor.min.css',
+                raw: 'temp/assets/styles/editor.min.css',
                 minified: false
             }),
 
@@ -69,14 +69,14 @@ export default {
                 targets: [
                     {
                         src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
-                        dest: 'dist/fonts/vendor'
+                        dest: 'dist/assets/fonts/vendor'
                     }
                 ],
                 hook: 'buildStart'
             }),
             css({
                 raw: false,
-                minified:'dist/styles/editor.min.css'
+                minified:'dist/assets/styles/editor.min.css'
             }),
 
             // Minify JS

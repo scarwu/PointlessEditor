@@ -17,8 +17,6 @@ div.id = 'pe-root'
 
 document.body.appendChild(div)
 
-const app = new App({
+export default new App({
     target: document.getElementById('pe-root')
 })
-
-export default app
