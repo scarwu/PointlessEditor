@@ -4,6 +4,7 @@ import ApiClient from './api'
 $: isShowModel = false
 $: targetMenu = ''
 $: postList = []
+$: postItem = null
 
 function toggleModel () {
     isShowModel = !isShowModel
@@ -16,6 +17,7 @@ function selectMenu (target) {
     case 'article':
     case 'describe':
         postList = []
+        postItem = null
 
         ApiClient.getPostList({
             type: target
@@ -25,6 +27,10 @@ function selectMenu (target) {
 
         break;
     }
+}
+
+function selectPost (targetPostItem) {
+    postItem = targetPostItem
 }
 </script>
 
@@ -40,15 +46,14 @@ $fa-font-path: "../../fonts/vendor"
 @import "../node_modules/@fortawesome/fontawesome-free/scss/brands"
 
 #pe-editor
-    display: flex
-
     position: fixed
     top: 0
     left: 0
     z-index: 9000
+    display: flex
     overflow: hidden
-    width: 5rem
-    height: 5rem
+    width: 4rem
+    height: 4rem
     background-color: #fff
 
     &.is-show-model
@@ -60,23 +65,22 @@ $fa-font-path: "../../fonts/vendor"
     .pe-left
         display: flex
         flex-direction: column
-
-        width: 25rem
+        width: 20rem
 
         .pe-head
             .pe-icon
                 display: inline-block
-                width: 5rem
-                height: 5rem
+                width: 4rem
+                height: 4rem
                 text-align: center
-                line-height: 5rem
+                line-height: 4rem
                 vertical-align: top
                 cursor: pointer
 
             .pe-title
                 display: inline-block
-                height: 5rem
-                line-height: 5rem
+                height: 4rem
+                line-height: 4rem
                 font-size: 1.6rem
                 vertical-align: top
 
@@ -87,13 +91,33 @@ $fa-font-path: "../../fonts/vendor"
                 padding: 0 1rem
                 height: 4rem
                 line-height: 4rem
+                font-size: 1.6rem
                 cursor: pointer
 
     .pe-right
         flex: 1
 
-        .pe-content
+        .pe-container
+            display: flex
             background-color: #eee
+
+        .pe-list
+            width: 20rem
+            height: 100vh
+            overflow-y: auto
+
+            .pe-option
+                overflow: hidden
+                padding: 0 1rem
+                height: 4rem
+                line-height: 4rem
+                font-size: 1.6rem
+                cursor: pointer
+
+        .pe-content
+            flex: 1
+            height: 100vh
+            overflow-y: auto
 </style>
 
 <div id="pe-editor" class:is-show-model={!isShowModel}>
@@ -114,17 +138,36 @@ $fa-font-path: "../../fonts/vendor"
         </div>
     </div>
     <div class="pe-right">
-        <div class="pe-content">
+        <div class="pe-container">
             {#if 'article' === targetMenu}
+            <div class="pe-list">
                 {#each postList as postItem}
-                <div>{postItem.title}</div>
+                <div class="pe-option" on:click={() => selectPost(postItem)}>
+                    {postItem.title}
+                </div>
                 {/each}
+            </div>
+            <div class="pe-content">
+                {#if null !== postItem}
+                {postItem.params}
+                {postItem.raw}
+                {/if}
+            </div>
             {/if}
             {#if 'describe' === targetMenu}
+            <div class="pe-list">
                 {#each postList as postItem}
-                <div>{postItem.title}</div>
+                <div class="pe-option" on:click={() => selectPost(postItem)}>
+                    {postItem.title}
+                </div>
                 {/each}
-            <div>Theme</div>
+            </div>
+            <div class="pe-content">
+                {#if null !== postItem}
+                {postItem.params}
+                {postItem.raw}
+                {/if}
+            </div>
             {/if}
             {#if 'theme' === targetMenu}
             <div>Theme</div>
