@@ -32,6 +32,14 @@ function selectMenu (target) {
 function selectPost (targetPostItem) {
     postItem = targetPostItem
 }
+
+function updatePostParam (key, value) {
+    postItem.params[key] = value
+}
+
+function updatePostRaw (raw) {
+    postItem.raw = raw
+}
 </script>
 
 <style lang="sass">
@@ -118,6 +126,38 @@ $fa-font-path: "../../fonts/vendor"
             flex: 1
             height: 100vh
             overflow-y: auto
+
+            .pe-post-params
+                .pe-param
+                    display: flex
+
+                    .pe-key
+                        width: 10rem
+                        height: 4rem
+                        line-height: 4rem
+
+                    .pe-value
+                        flex: 1
+                        height: 4rem
+                        line-height: 4rem
+
+            .pe-post-raw
+                position: relative
+
+                .pe-reset
+                    font-size: 1.4rem
+
+                pre
+                    code
+                        // color: transparent
+
+                textarea
+                    position: absolute
+                    top: 0
+                    left: 0
+                    right: 0
+                    bottom: 0
+                    background: transparent
 </style>
 
 <div id="pe-editor" class:is-show-model={!isShowModel}>
@@ -139,7 +179,7 @@ $fa-font-path: "../../fonts/vendor"
     </div>
     <div class="pe-right">
         <div class="pe-container">
-            {#if 'article' === targetMenu}
+            {#if 'article' === targetMenu || 'describe' === targetMenu}
             <div class="pe-list">
                 {#each postList as postItem}
                 <div class="pe-option" on:click={() => selectPost(postItem)}>
@@ -149,29 +189,32 @@ $fa-font-path: "../../fonts/vendor"
             </div>
             <div class="pe-content">
                 {#if null !== postItem}
-                {postItem.params}
-                {postItem.raw}
-                {/if}
-            </div>
-            {/if}
-            {#if 'describe' === targetMenu}
-            <div class="pe-list">
-                {#each postList as postItem}
-                <div class="pe-option" on:click={() => selectPost(postItem)}>
-                    {postItem.title}
+                <div class="pe-post-params">
+                    {#each Object.keys(postItem.params) as key}
+                    <div class="pe-param">
+                        <div class="pe-key">{key}</div>
+                        <div class="pe-value">
+                            <input type="text" value={postItem.params[key]} on:change={(event) => updatePostParam(key, event.target.value)} />
+                        </div>
+                    </div>
+                    {/each}
                 </div>
-                {/each}
-            </div>
-            <div class="pe-content">
-                {#if null !== postItem}
-                {postItem.params}
-                {postItem.raw}
+                <div class="pe-post-raw">
+                    <pre>
+                        <code calss="pe-reset">{postItem.raw}</code>
+                    </pre>
+                    <textarea calss="pe-reset" on:change={(event) => updatePostRaw(event.target.value)}>
+                        {postItem.raw}
+                    </textarea>
+                </div>
                 {/if}
             </div>
             {/if}
+
             {#if 'theme' === targetMenu}
             <div>Theme</div>
             {/if}
+
             {#if 'config' === targetMenu}
             <div>Config</div>
             {/if}
