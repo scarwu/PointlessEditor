@@ -1,3 +1,65 @@
+<div id="pe-editor" class:is-show-model={!isShowModel}>
+    <div class="pe-left">
+        <div class="pe-head">
+            <div class="pe-icon" on:click={() => toggleModel()}>
+                <i class="fas fa-user-cog"></i>
+            </div>
+            <div class="pe-title">
+                Pointless Editor
+            </div>
+        </div>
+        <div class="pe-menu">
+            <div class="pe-option" on:click={() => selectMenu('article')}>Article</div>
+            <div class="pe-option" on:click={() => selectMenu('describe')}>Describe</div>
+            <div class="pe-option" on:click={() => selectMenu('theme')}>Theme</div>
+            <div class="pe-option" on:click={() => selectMenu('config')}>Config</div>
+        </div>
+    </div>
+    <div class="pe-right">
+        <div class="pe-container">
+            {#if 'article' === targetMenu || 'describe' === targetMenu}
+            <div class="pe-list">
+                {#each postList as postItem}
+                <div class="pe-option" on:click={() => selectPost(postItem)}>
+                    {postItem.title}
+                </div>
+                {/each}
+            </div>
+            <div class="pe-content">
+                {#if null !== postItem}
+                <div class="pe-post-params">
+                    {#each Object.keys(postItem.params) as key}
+                    <div class="pe-param">
+                        <div class="pe-key">{key}</div>
+                        <div class="pe-value">
+                            <input type="text" value={postItem.params[key]} on:change={(event) => updatePostParam(key, event.target.value)} />
+                        </div>
+                    </div>
+                    {/each}
+                </div>
+                <div class="pe-post-raw">
+                    <pre>
+                        <code calss="pe-reset">{postItem.raw}</code>
+                    </pre>
+                    <textarea calss="pe-reset" on:change={(event) => updatePostRaw(event.target.value)}>
+                        {postItem.raw}
+                    </textarea>
+                </div>
+                {/if}
+            </div>
+            {/if}
+
+            {#if 'theme' === targetMenu}
+            <div>Theme</div>
+            {/if}
+
+            {#if 'config' === targetMenu}
+            <div>Config</div>
+            {/if}
+        </div>
+    </div>
+</div>
+
 <script>
 import ApiClient from './api'
 
@@ -159,65 +221,3 @@ $fa-font-path: "../../fonts/vendor"
                     bottom: 0
                     background: transparent
 </style>
-
-<div id="pe-editor" class:is-show-model={!isShowModel}>
-    <div class="pe-left">
-        <div class="pe-head">
-            <div class="pe-icon" on:click={() => toggleModel()}>
-                <i class="fas fa-user-cog"></i>
-            </div>
-            <div class="pe-title">
-                Pointless Editor
-            </div>
-        </div>
-        <div class="pe-menu">
-            <div class="pe-option" on:click={() => selectMenu('article')}>Article</div>
-            <div class="pe-option" on:click={() => selectMenu('describe')}>Describe</div>
-            <div class="pe-option" on:click={() => selectMenu('theme')}>Theme</div>
-            <div class="pe-option" on:click={() => selectMenu('config')}>Config</div>
-        </div>
-    </div>
-    <div class="pe-right">
-        <div class="pe-container">
-            {#if 'article' === targetMenu || 'describe' === targetMenu}
-            <div class="pe-list">
-                {#each postList as postItem}
-                <div class="pe-option" on:click={() => selectPost(postItem)}>
-                    {postItem.title}
-                </div>
-                {/each}
-            </div>
-            <div class="pe-content">
-                {#if null !== postItem}
-                <div class="pe-post-params">
-                    {#each Object.keys(postItem.params) as key}
-                    <div class="pe-param">
-                        <div class="pe-key">{key}</div>
-                        <div class="pe-value">
-                            <input type="text" value={postItem.params[key]} on:change={(event) => updatePostParam(key, event.target.value)} />
-                        </div>
-                    </div>
-                    {/each}
-                </div>
-                <div class="pe-post-raw">
-                    <pre>
-                        <code calss="pe-reset">{postItem.raw}</code>
-                    </pre>
-                    <textarea calss="pe-reset" on:change={(event) => updatePostRaw(event.target.value)}>
-                        {postItem.raw}
-                    </textarea>
-                </div>
-                {/if}
-            </div>
-            {/if}
-
-            {#if 'theme' === targetMenu}
-            <div>Theme</div>
-            {/if}
-
-            {#if 'config' === targetMenu}
-            <div>Config</div>
-            {/if}
-        </div>
-    </div>
-</div>

@@ -23,6 +23,9 @@ export default {
     },
     plugins: [
         svelte({
+            compilerOptions: {
+                dev: 'development' === mode
+            },
             preprocess: {
                 style: sass({
                     sourceMap: 'development' === mode
