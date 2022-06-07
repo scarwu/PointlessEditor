@@ -12,7 +12,7 @@ import css from 'rollup-plugin-css-porter'
 const mode = process.env.MODE || 'development'
 
 export default {
-    input: 'src/editor.js',
+    input: 'src/scripts/editor.js',
     output: {
         sourcemap: 'development' === mode,
         format: 'iife',
@@ -37,20 +37,24 @@ export default {
         }),
         commonjs(),
         json(),
+        copy({
+            targets: [
+                {
+                    src: 'src/views/*',
+                    dest: 'temp/views'
+                },
+                {
+                    src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
+                    dest: 'temp/assets/fonts/vendor'
+                }
+            ],
+            hook: 'buildStart'
+        }),
 
         ...('development' === mode ? [
             shell({
                 commands: [
                     'rm -rf temp'
-                ],
-                hook: 'buildStart'
-            }),
-            copy({
-                targets: [
-                    {
-                        src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
-                        dest: 'temp/assets/fonts/vendor'
-                    }
                 ],
                 hook: 'buildStart'
             }),
@@ -65,15 +69,6 @@ export default {
             shell({
                 commands: [
                     'rm -rf dist'
-                ],
-                hook: 'buildStart'
-            }),
-            copy({
-                targets: [
-                    {
-                        src: 'node_modules/@fortawesome/fontawesome-free/webfonts/*.{otf,eot,svg,ttf,woff,woff2}',
-                        dest: 'dist/assets/fonts/vendor'
-                    }
                 ],
                 hook: 'buildStart'
             }),

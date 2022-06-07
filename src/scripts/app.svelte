@@ -1,6 +1,6 @@
-<div id="pe-editor" class:is-show-model={isShowModel}>
+<div id="pe-editor">
     <div class="pe-left">
-        <div class="pe-head" on:click={() => toggleModel()}>
+        <div class="pe-head">
             <div class="pe-logo">
                 <i class="fas fa-user-cog"></i>
             </div>
@@ -130,7 +130,6 @@
 <script>
 import ApiClient from './api'
 
-$: isShowModel = true
 $: activedMenu = 'dashboard'
 $: postList = []
 $: postItem = null
@@ -141,11 +140,6 @@ function isEmpty (variable) {
 
 function isNotEmpty (variable) {
     return (undefined !== variable && null !== variable)
-}
-
-function toggleModel () {
-    isShowModel = !isShowModel
-    activedMenu = isShowModel ? 'dashboard' : ''
 }
 
 function selectMenu (target) {
@@ -176,36 +170,15 @@ function selectPost (targetPostItem) {
 </script>
 
 <style lang="sass">
-// Reset Bootstrap
-$grid-gutter-width: 0
-$fa-font-path: "../../fonts/vendor"
-
-// Import 3rd-Party Libraries
-@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome"
-@import "../node_modules/@fortawesome/fontawesome-free/scss/solid"
-@import "../node_modules/@fortawesome/fontawesome-free/scss/regular"
-@import "../node_modules/@fortawesome/fontawesome-free/scss/brands"
-
-// Font Face
-@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,700|Noto+Sans:100,300,400,700|Noto+Sans+JP:100,300,400,700')
 
 // Load Styles
-@import "./styles/mixin"
+@import "../styles/global"
+@import "../styles/mixin"
 
 #pe-editor
-    position: fixed
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
-    z-index: 9000
-    display: none
+    height: 100vh
     overflow: hidden
     background-color: #fff
-    font-family: "Roboto", "Noto Sans TC", Arial, sans-serif
-
-    &.is-show-model
-        display: flex
 
     > .pe-left
         display: flex
