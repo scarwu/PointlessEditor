@@ -11,20 +11,20 @@
         <div class="pe-content">
             <div class="pe-post-list">
                 {#each postList as postItem}
-                    <Link class="pe-option" to={`/editor/${target}/${postItem.params.url}`}>
+                    <Link class="pe-option" to={`/editor/${type}/${postItem.params.url}`}>
                         {#if false === postItem.params.isPublic}
                             <div class="pe-text">🔒{postItem.title}</div>
                         {:else}
                             <div class="pe-text">{postItem.title}</div>
                         {/if}
 
-                        {#if 'article' === target}
+                        {#if 'article' === type}
                             <div class="pe-info">
                                 <span>{postItem.params.date}</span>
                                 <span>．</span>
                                 <span>{postItem.params.url}</span>
                             </div>
-                        {:else if 'describe' === target}
+                        {:else if 'describe' === type}
                             <div class="pe-info">
                                 <span>{postItem.params.url}</span>
                             </div>
@@ -41,16 +41,16 @@ import { Link } from 'svelte-routing'
 import ApiClient from '../api'
 
 // Props
-export let target
+export let type
 
 $: postList = []
 
 ApiClient.getPostList({
-    type: target
-}).then((payload) => {
-    postList = payload[target]
+    type: type
+}).then((res) => {
+    postList = res.payload
 
-    if ('article' === target) {
+    if ('article' === type) {
         postList.reverse()
     }
 })

@@ -45,16 +45,16 @@
 
         <Route path="/editor/" component={DashboardPage} />
         <Route path="/editor/article">
-            <PostListPage target="article" />
+            <PostListPage type="article" />
         </Route>
         <Route path="/editor/article/:url" let:params>
-            <PostEditorPage target="article" url={params.url} />
+            <PostEditorPage type="article" url={params.url} />
         </Route>
         <Route path="/editor/describe">
-            <PostListPage target="describe" />
+            <PostListPage type="describe" />
         </Route>
         <Route path="/editor/describe/:url" let:params>
-            <PostEditorPage target="describe" url={params.url} />
+            <PostEditorPage type="describe" url={params.url} />
         </Route>
     </Router>
 </div>

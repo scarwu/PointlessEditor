@@ -1,8 +1,8 @@
-<div class="pe-middle">
+<!-- <div class="pe-middle">
     <div class="pe-container">
         <div class="pe-panel">
             <div class="pe-left">
-                <Link class="pe-button" to={`/editor/${target}`}>
+                <Link class="pe-button" to={`/editor/${type}`}>
                     <i class="fa-solid fa-angle-left"></i>
                 </Link>
             </div>
@@ -31,22 +31,22 @@
             </div>
         {/each}
     </div>
-</div>
+</div> -->
 
 <script>
 import { Link } from 'svelte-routing'
 import ApiClient from '../api'
 
 // Props
-export let target
+export let type
 export let url
 
 $: postItem = null
 
-ApiClient.getPostItem(url, {
-    type: target
-}).then((payload) => {
-    postItem = payload
+ApiClient.getPostItem({
+    url: url
+}).then((res) => {
+    postItem = res.payload
 })
 </script>
 

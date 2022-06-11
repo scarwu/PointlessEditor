@@ -17,77 +17,109 @@ function failureResponse (err) {
 
 export default {
 
+    // Post
+    getPostList(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/getList/:type:'
+                .replace(':type:', payload.type),
+            method: 'get'
+        }).then(successResponse, failureResponse)
+    },
+    getPostItem(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/getItem/:url:'
+                .replace(':url:', payload.url),
+            method: 'get'
+        }).then(successResponse, failureResponse)
+    },
+    createPostItem(payload = {}) {
+        return axios({
+            type: window.location.origin + '/api/post/createItem/:type:'
+                .replace(':type:', payload.type),
+            method: 'post',
+            data: payload.data
+        }).then(successResponse, failureResponse)
+    },
+    updatePostItem(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/updateItem/:url:'
+                .replace(':url:', payload.url),
+            method: 'post',
+            data: payload.data
+        }).then(successResponse, failureResponse)
+    },
+    removePostItem(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/removeItem/:url:'
+                .replace(':url:', payload.url),
+            method: 'post'
+        }).then(successResponse, failureResponse)
+    },
+    getPostMediaList(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/getMediaItem/:url:'
+                .replace(':url:', payload.url),
+            method: 'post',
+            headers: {
+                'content-type': 'multipart/form-data'
+            },
+            data: payload.data
+        }).then(successResponse, failureResponse)
+    },
+    uploadPostMediaItem(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/uploadMediaItem/:url:'
+                .replace(':url:', payload.url),
+            method: 'post',
+            headers: {
+                'content-type': 'multipart/form-data'
+            },
+            data: payload.data
+        }).then(successResponse, failureResponse)
+    },
+    removePostMediaItem(payload = {}) {
+        return axios({
+            url: window.location.origin + '/api/post/removeMediaItem/:url:/:hash:'
+                .replace(':url:', payload.url)
+                .replace(':hash:', payload.hash),
+            method: 'post'
+        }).then(successResponse, failureResponse)
+    },
+
     // Config
     loadConfigItem() {
         return axios({
-            url: window.location.origin + '/api/config',
+            url: window.location.origin + '/api/config/loadItem',
             method: 'get'
         }).then(successResponse, failureResponse)
     },
     saveConfigItem(data) {
         return axios({
-            url: window.location.origin + '/api/config/save',
+            url: window.location.origin + '/api/config/saveItem',
             method: 'post',
-            data: data
-        }).then(successResponse, failureResponse)
-    },
-
-    // Post
-    getPostList(data) {
-        return axios({
-            url: window.location.origin + '/api/post',
-            method: 'get',
-            params: data
-        }).then(successResponse, failureResponse)
-    },
-    getPostItem(id, data) {
-        return axios({
-            url: window.location.origin + '/api/post/:id:'.replace(':id:', id),
-            method: 'get',
-            params: data
-        }).then(successResponse, failureResponse)
-    },
-    createPostItem(data) {
-        return axios({
-            url: window.location.origin + '/api/post/create',
-            method: 'post',
-            data: data
-        }).then(successResponse, failureResponse)
-    },
-    updatePostItem(id, data) {
-        return axios({
-            url: window.location.origin + '/api/post/:id:/update'.replace(':id:', id),
-            method: 'post',
-            data: data
-        }).then(successResponse, failureResponse)
-    },
-    removePostItem(id, data) {
-        return axios({
-            url: window.location.origin + '/api/post/:id:/remove'.replace(':id:', id),
-            method: 'post',
-            data: data
+            data: payload.data
         }).then(successResponse, failureResponse)
     },
 
     // Theme
     getThemeList() {
         return axios({
-            url: window.location.origin + '/api/theme',
+            url: window.location.origin + '/api/theme/getList',
             method: 'get'
         }).then(successResponse, failureResponse)
     },
-    installThemeItem(data) {
+    installThemeItem(payload = {}) {
         return axios({
-            url: window.location.origin + '/api/theme/install',
+            url: window.location.origin + '/api/theme/installItem',
             method: 'post',
-            data: data
+            data: payload.data
         }).then(successResponse, failureResponse)
     },
-    uninstallThemeItem(data) {
+    uninstallThemeItem(payload = {}) {
         return axios({
-            url: window.location.origin + '/api/theme/uninstall',
-            method: 'post',
-            data: data
+            url: window.location.origin + '/api/theme/uninstallItem/:name:'
+                .replace(':name:', payload.name),
+            method: 'post'
         }).then(successResponse, failureResponse)
     }
 }
