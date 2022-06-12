@@ -1,6 +1,6 @@
 <div id="pe-editor">
-    <Router>
-        <div class="pe-left">
+    <Router basepath="/editor">
+        <div class="pe-navigation">
             <div class="pe-head">
                 <div class="pe-logo">
                     <i class="fas fa-user-cog"></i>
@@ -10,50 +10,62 @@
                 </div>
             </div>
             <div class="pe-menu">
-                <Link class="pe-option" to="/editor">
-                    <span class="pe-icon">
-                        <i class="fa-solid fa-gauge"></i>
-                    </span>
-                    <span class="pe-text">Dashboard</span>
+                <Link to="">
+                    <div class="pe-option" >
+                        <span class="pe-icon">
+                            <i class="fa-solid fa-gauge"></i>
+                        </span>
+                        <span class="pe-text">Dashboard</span>
+                    </div>
                 </Link>
-                <Link class="pe-option" to="/editor/article">
-                    <span class="pe-icon">
-                        <i class="fa-solid fa-file-pen"></i>
-                    </span>
-                    <span class="pe-text">Article</span>
+                <Link to="article">
+                    <div class="pe-option" >
+                        <span class="pe-icon">
+                            <i class="fa-solid fa-file-pen"></i>
+                        </span>
+                        <span class="pe-text">Article</span>
+                    </div>
                 </Link>
-                <Link class="pe-option" to="/editor/describe">
-                    <span class="pe-icon">
-                        <i class="fa-solid fa-book-open"></i>
-                    </span>
-                    <span class="pe-text">Describe</span>
+                <Link to="describe">
+                    <div class="pe-option" >
+                        <span class="pe-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </span>
+                        <span class="pe-text">Describe</span>
+                    </div>
                 </Link>
-                <!-- <Link class="pe-option" to="/editor/theme">
-                    <span class="pe-icon">
-                        <i class="fa-solid fa-table-columns"></i>
-                    </span>
-                    <span class="pe-text">Theme</span>
+                <!-- <Link to="theme">
+                    <div class="pe-option" >
+                        <span class="pe-icon">
+                            <i class="fa-solid fa-table-columns"></i>
+                        </span>
+                        <span class="pe-text">Theme</span>
+                    </div>
                 </Link>
-                <Link class="pe-option" to="/editor/config">
-                    <span class="pe-icon">
-                        <i class="fa-solid fa-gear"></i>
-                    </span>
-                    <span class="pe-text">Config</span>
+                <Link to="config">
+                    <div class="pe-option" >
+                        <span class="pe-icon">
+                            <i class="fa-solid fa-gear"></i>
+                        </span>
+                        <span class="pe-text">Config</span>
+                    </div>
                 </Link> -->
             </div>
         </div>
 
-        <Route path="/editor/" component={DashboardPage} />
-        <Route path="/editor/article">
+        <Route path="">
+            <DashboardPage />
+        </Route>
+        <Route path="article">
             <PostListPage type="article" />
         </Route>
-        <Route path="/editor/article/:url" let:params>
+        <Route path="article/:url" let:params>
             <PostEditorPage type="article" url={params.url} />
         </Route>
-        <Route path="/editor/describe">
+        <Route path="describe">
             <PostListPage type="describe" />
         </Route>
-        <Route path="/editor/describe/:url" let:params>
+        <Route path="describe/:url" let:params>
             <PostEditorPage type="describe" url={params.url} />
         </Route>
     </Router>
@@ -77,7 +89,7 @@ function isNotEmpty (variable) {
 
 </script>
 
-<style lang="sass">
+<style lang="sass" global>
 
 // Load Styles
 @import "../styles/global"
@@ -90,7 +102,7 @@ function isNotEmpty (variable) {
     overflow: hidden
     background-color: #fff
 
-    > .pe-left
+    > .pe-navigation
         display: flex
         flex-direction: column
         width: 30rem
@@ -120,8 +132,10 @@ function isNotEmpty (variable) {
         .pe-menu
             padding: 2rem 0
 
-            .pe-option
+            :global(a)
                 display: block
+
+            .pe-option
                 padding: 1rem 3rem
                 +font-size(1.6)
                 font-weight: 300
@@ -145,37 +159,37 @@ function isNotEmpty (variable) {
                     height: 2.5rem
                     line-height: 2.5rem
 
-    > .pe-middle
-        flex: 1
+    // > .pe-middle
+    //     flex: 1
 
-        .pe-container
-            padding: 3rem 6rem
-            // display: flex
-            // background-color: #efefef
+    //     .pe-container
+    //         padding: 3rem 6rem
+    //         // display: flex
+    //         // background-color: #efefef
 
-            .pe-panel
-                margin-bottom: 3rem
-                height: 3rem
+    //         .pe-panel
+    //             margin-bottom: 3rem
+    //             height: 3rem
 
-                .pe-left,
-                .pe-right
-                    height: 3rem
-                    line-height: 3rem
+    //             .pe-left,
+    //             .pe-right
+    //                 height: 3rem
+    //                 line-height: 3rem
 
-                .pe-left
-                    float: left
-                    text-align: left
+    //             .pe-left
+    //                 float: left
+    //                 text-align: left
 
-                .pe-right
-                    float: right
-                    text-align: right
+    //             .pe-right
+    //                 float: right
+    //                 text-align: right
 
-            .pe-content
-                height: calc(100vh - 12rem)
-                +scrollable()
+    //         .pe-content
+    //             height: calc(100vh - 12rem)
+    //             +scrollable()
 
-    > .pe-right
-        padding: 3rem
-        width: 30rem
-        border-left: 1px solid #efefef
+    // > .pe-right
+    //     padding: 3rem
+    //     width: 30rem
+    //     border-left: 1px solid #efefef
 </style>
